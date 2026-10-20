@@ -1,1 +1,1 @@
-Quarkus guide: https://quarkus.io/guides/rest-client-reactive
+Quarkus guide: https://quarkus.io/guides/rest-client-reactive +
