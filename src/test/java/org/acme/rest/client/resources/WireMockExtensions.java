@@ -18,6 +18,7 @@ import java.util.Objects;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class WireMockExtensions implements QuarkusTestResourceLifecycleManager {
@@ -49,8 +50,15 @@ public class WireMockExtensions implements QuarkusTestResourceLifecycleManager {
             String extensions = new String(is.readAllBytes());
 
             // Stub for full list of extensions:
-            wireMockServer.stubFor(get(urlEqualTo(BASE_PATH))
-                    .willReturn(okJson(extensions)));
+            wireMockServer.stubFor(
+                get(urlEqualTo(BASE_PATH + "/extensions?id=error-test"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(500)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody("{\"error\":\"Internal Server Error\"}")
+                    )
+            );
 
             // Stub for each country
             try (StringReader sr = new StringReader(extensions);

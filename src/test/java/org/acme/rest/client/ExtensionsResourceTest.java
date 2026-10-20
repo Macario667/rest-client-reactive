@@ -53,4 +53,12 @@ public class ExtensionsResourceTest {
                 "[0].keywords.size()", greaterThan(1),
                 "[0].keywords", hasItem("rest-client"));
     }
+
+    @Test 
+    public void testExtensionServerError() {
+        given()
+            .when().get("/extension/id/error-test")
+            .then()
+            .statusCode(500);
+    }
 }
