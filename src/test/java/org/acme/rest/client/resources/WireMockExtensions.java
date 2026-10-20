@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class WireMockExtensions implements QuarkusTestResourceLifecycleManager {
@@ -58,6 +59,12 @@ public class WireMockExtensions implements QuarkusTestResourceLifecycleManager {
                             .withHeader("Content-Type", "application/json")
                             .withBody("{\"error\":\"Internal Server Error\"}")
                     )
+            );
+
+            wireMockServer.stubFor(
+                get(urlEqualTo(BASE_PATH + "/extensions?id=header-test"))
+                    .withHeader("X-Client-Source", equalTo("inklusport"))
+                    .willReturn(okJson("[]"))
             );
 
             // Stub for each country

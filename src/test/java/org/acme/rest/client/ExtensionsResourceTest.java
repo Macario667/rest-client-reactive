@@ -61,4 +61,14 @@ public class ExtensionsResourceTest {
             .then()
             .statusCode(500);
     }
+
+    @Test 
+    public void testCustomClientHeader() {
+        given()
+            .when().get("/extension/id/header-test")
+            .then()
+            .statusCode(200)
+            .body("$.size()", is(0));
+            
+    }
 }
