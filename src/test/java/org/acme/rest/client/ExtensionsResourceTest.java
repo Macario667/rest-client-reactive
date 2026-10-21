@@ -7,6 +7,7 @@ import org.acme.rest.client.resources.WireMockExtensions;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
@@ -71,4 +72,35 @@ public class ExtensionsResourceTest {
             .body("$.size()", is(0));
             
     }
+
+    @Test
+    public void testDynamicClientHeaders() {
+        given()
+            .when().get("/extension/id-header/dynamic-header-test")
+            .then()
+            .statusCode(200)
+            .body("$.size()", is(0));
+    }
+
+    @Test 
+    public void testFullHttpResponse() {
+        given()
+            .when()
+                .get("/extension/full-response/io.quarkus:quarkus-rest-client")
+            .then()
+                .statusCode(200)
+                .header("Content-Type", containsString("application/json"));
+    }
+
+    
+    @Test
+    public void testRequestFilter() {
+        given()
+            .when()
+                .get("/extension/id/filter-test")
+            .then()
+                .statusCode(200)
+                .body("$.size()", is(0));
+    }
+
 }

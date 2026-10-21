@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -40,5 +41,21 @@ public class ExtensionsResource {
     public Uni<Set<Extension>> idUni(
             @PathParam("id") String id) {
         return extensionsService.getByIdAsUni(id);
+    }
+
+    @GET
+    @Path("/id-header/{id}")
+    public Set<Extension> idWithHeaders(
+            @PathParam("id") String id) {
+        return extensionsService.getByIdWithHeaders(
+                id,
+                "events-service"
+        );
+    }
+
+    @GET 
+    @Path("/full-response/{id}")
+    public Response fullResponse(@PathParam("id") String id) {
+        return extensionsService.getByIdWithFullResponse(id);
     }
 }

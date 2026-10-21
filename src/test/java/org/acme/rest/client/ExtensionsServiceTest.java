@@ -23,15 +23,31 @@ class ExtensionsServiceTest {
         response.close();
     }
 
+    @Test 
+    void shouldMapNotFoundError() {
+        try (Response response = Response.status(404).build()) {
+            RuntimeException exception =
+            ExtensionsService.toException(response);
+
+            assertNotNull(exception);
+            assertInstanceOf(
+                jakarta.ws.rs.NotFoundException.class,
+                exception
+            );
+            assertEquals(
+                "La extensión solicitada no existe",
+                exception.getMessage()
+            );
+        } 
+    }
+
     @Test
     void shouldIgnoreOtherHttpStatuses() {
-        Response response = Response.status(404).build();
-
-        RuntimeException exception =
+        try (Response response = Response.status(400).build()) {
+            RuntimeException exception =
                 ExtensionsService.toException(response);
 
-        assertNull(exception);
-
-        response.close();
+            assertNull(exception);
+        }
     }
 }

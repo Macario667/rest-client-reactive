@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -64,6 +65,42 @@ public class WireMockExtensions implements QuarkusTestResourceLifecycleManager {
             wireMockServer.stubFor(
                 get(urlEqualTo(BASE_PATH + "/extensions?id=header-test"))
                     .withHeader("X-Client-Source", equalTo("inklusport"))
+                    .willReturn(okJson("[]"))
+            );
+
+            wireMockServer.stubFor(
+                get(urlEqualTo(BASE_PATH + "/extensions?id=dynamic-header-test"))
+                    .withHeader("X-Client-Source", matching("inklusport"))
+                    .withHeader("X-Request-Source", matching("events-service"))
+                    .withHeader("X-Client-Application", matching("inklusport-api"))
+                    .willReturn(okJson("[]"))
+            );
+
+            wireMockServer.stubFor(
+                get(urlEqualTo(BASE_PATH + "/extensions?id=slow-test"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "application/json")
+                            .withFixedDelay(2500)
+                            .withBody("[]")
+                    )
+            );
+
+            
+            wireMockServer.stubFor(
+                get(urlEqualTo(BASE_PATH + "/extensions?id=filter-test"))
+                    .withHeader("X-Correlation-ID", matching(
+                        "[0-9a-fA-F-]{36}"
+                    ))
+                    .willReturn(okJson("[]"))
+            );
+
+            wireMockServer.stubFor(
+                get(urlEqualTo(BASE_PATH + "/extensions?id=filter-test"))
+                    .withHeader("X-Correlation-ID", matching(
+                        "[0-9a-fA-F-]{36}"
+                    ))
                     .willReturn(okJson("[]"))
             );
 
